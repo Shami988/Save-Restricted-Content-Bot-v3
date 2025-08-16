@@ -1,33 +1,22 @@
-FROM python:3.10-slim
+# Use the desired base image
+FROM ubuntu:latest
 
-# Updating and installing necessary packages in one go
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    python3-pip \
-    wget \
-    ffmpeg \
-    bash \
-    neofetch \
-    software-properties-common \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* 
+# Set environment variables to prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Set the working directory
-WORKDIR /app
+# Update package list and install necessary packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        python3-pip \
+        wget \
+        ffmpeg \
+        bash \
+        neofetch \
+        software-properties-common && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip3 install wheel
-RUN pip3 install --no-cache-dir -U -r requirements.txt
-
-# Copy application code
-COPY . .
-
-# Expose port
-EXPOSE 5000
-
-# Command to run the application
-CMD ["flask", "run", "-h", "0.0.0.0", "-p", "5000"]
+# Set any additional commands as needed below
+# ...
